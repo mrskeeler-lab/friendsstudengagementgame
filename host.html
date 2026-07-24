@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Host Control Panel</title>
+  <script src="config.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700;900&family=Permanent+Marker&display=swap" rel="stylesheet">
+  
+  <style>
+    body {
+      font-family: 'Fredoka', sans-serif;
+      background: radial-gradient(circle at center, #3B124D 0%, #1A0524 100%);
+    }
+    .chalk-font { font-family: 'Permanent Marker', cursive; }
+    .brick-pattern {
+      background-color: #2a1130;
+      background-image: radial-gradient(#3a1743 1.5px, transparent 0);
+      background-size: 18px 18px;
+    }
+    .chalkboard-card {
+      background-color: #17221E;
+      border: 2px solid #2A3B34;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    }
+    .couch-orange { background-color: #C85A17; }
+    .friends-dot-red { color: #E11D48; }
+    .friends-dot-blue { color: #2563EB; }
+    .friends-dot-yellow { color: #F59E0B; }
+  </style>
+</head>
+<body class="brick-pattern text-white min-h-screen p-6 select-none">
+
+  <header class="text-center mb-8">
+    <h1 class="text-4xl sm:text-5xl font-black tracking-widest text-white flex items-center justify-center space-x-1 uppercase drop-shadow-md">
+      <span>H</span><span class="friends-dot-red">•</span>
+      <span>O</span><span class="friends-dot-blue">•</span>
+      <span>S</span><span class="friends-dot-yellow">•</span>
+      <span>T</span>
+    </h1>
+    <p class="text-yellow-400 italic text-sm font-bold tracking-widest mt-2">"The One Where You Run The Game" ☕</p>
+  </header>
+
+  <main class="max-w-4xl w-full mx-auto space-y-6">
+    <section class="chalkboard-card border-2 border-yellow-500/60 rounded-2xl p-6 shadow-2xl">
+      <div class="flex items-center justify-between border-b border-yellow-500/30 pb-3 mb-4">
+        <h3 class="chalk-font text-xl text-yellow-400 tracking-wider">
+          🎸 Central Perk Soundboard
+        </h3>
+      </div>
+      
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+        <button onclick="playSound('pivot')" class="couch-orange hover:bg-orange-600 text-amber-100 font-bold p-4 rounded-xl border border-amber-300/40 shadow-md active:scale-95 text-lg">🛋️ PIVOT!</button>
+        <button onclick="playSound('break')" class="couch-orange hover:bg-orange-600 text-amber-100 font-bold p-4 rounded-xl border border-amber-300/40 shadow-md active:scale-95 text-lg">💔 On A Break</button>
+        <button onclick="playSound('howyoudoin')" class="couch-orange hover:bg-orange-600 text-amber-100 font-bold p-4 rounded-xl border border-amber-300/40 shadow-md active:scale-95 text-lg">😏 How You Doin'</button>
+        <button onclick="playSound('ohmygod')" class="couch-orange hover:bg-orange-600 text-amber-100 font-bold p-4 rounded-xl border border-amber-300/40 shadow-md active:scale-95 text-lg">😲 Oh My God</button>
+        <button onclick="playSound('smellycat')" class="couch-orange hover:bg-orange-600 text-amber-100 font-bold p-4 rounded-xl border border-amber-300/40 shadow-md active:scale-95 text-lg">🐈 Smelly Cat</button>
+        <button onclick="playSound('unagi')" class="couch-orange hover:bg-orange-600 text-amber-100 font-bold p-4 rounded-xl border border-amber-300/40 shadow-md active:scale-95 text-lg">🍣 Unagi</button>
+      </div>
+    </section>
+
+    <div class="text-center mt-10">
+      <button onclick="resetGame()" class="bg-red-600 hover:bg-red-500 text-white font-black px-6 py-4 rounded-xl border-2 border-red-300 shadow-xl transition-all active:scale-95 text-lg uppercase tracking-wider">
+        🧹 Reset Game Data
+      </button>
+      <p id="status-text" class="text-yellow-300 font-bold mt-4 h-6"></p>
+    </div>
+  </main>
+
+  <script>
+    function playSound(soundName) {
+      const audio = new Audio(`audio/${soundName}.mp3`);
+      audio.play().catch(e => console.warn("Audio blocked or file missing."));
+    }
+
+    function resetGame() {
+      if (confirm("Are you sure you want to wipe all scores and responses from the spreadsheet?")) {
+        document.getElementById('status-text').innerText = "Sending reset signal...";
+        
+        fetch(`${WEB_APP_URL}?action=reset`, {
+          method: 'GET',
+          mode: 'no-cors'
+        }).then(() => {
+          document.getElementById('status-text').innerText = "✓ Game reset signal sent!";
+          setTimeout(() => document.getElementById('status-text').innerText = '', 3000);
+        }).catch(err => {
+          document.getElementById('status-text').innerText = "⚠️ Error sending reset signal.";
+        });
+      }
+    }
+  </script>
+</body>
+</html>
